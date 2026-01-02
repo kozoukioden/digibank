@@ -1,0 +1,471 @@
+@startuml Smart_City_DigiBank_Class_Diagram
+
+title Smart City Automation with Digital Banking Integration - Class Diagram
+
+' Design Pattern Colors
+skinparam class {
+    BackgroundColor<<Singleton>> LightBlue
+    BackgroundColor<<Command>> LightGreen
+    BackgroundColor<<Observer>> LightYellow
+    BackgroundColor<<Adapter>> LightPink
+    BackgroundColor<<Template>> LightCoral
+    BorderColor Black
+}
+
+' ==================== SINGLETON PATTERN ====================
+
+package "Singleton Pattern" {
+    class CityController <<Singleton>> {
+        - {static} instance : CityController
+        - observers : List<Observer>
+        - invoker : CommandInvoker
+        - cityDevices : Map<String, Device>
+
+        - CityController()
+        + {static} getInstance() : CityController
+        + executeCommand(cmd : Command) : void
+        + registerObserver(obs : Observer) : void
+        + removeObserver(obs : Observer) : void
+        + notifyObservers(event : Event) : void
+        + getCityStatus() : CityStatus
+    }
+}
+
+' ==================== COMMAND PATTERN ====================
+
+package "Command Pattern" {
+    interface Command <<Command>> {
+        + execute() : void
+        + undo() : void
+        + getDescription() : String
+    }
+
+    class CommandInvoker <<Command>> {
+        - commandQueue : Queue<Command>
+        - history : Stack<Command>
+
+        + executeCommand(cmd : Command) : void
+        + undoLastCommand() : void
+        + getHistory() : List<Command>
+    }
+
+    class LightOnCommand <<Command>> {
+        - light : StreetLight
+
+        + execute() : void
+        + undo() : void
+    }
+
+    class LightOffCommand <<Command>> {
+        - light : StreetLight
+
+        + execute() : void
+        + undo() : void
+    }
+
+    class ProcessPaymentCommand <<Command>> {
+        - banking : BankingService
+        - transaction : Transaction
+
+        + execute() : void
+        + undo() : void
+    }
+
+    class AdjustTrafficCommand <<Command>> {
+        - trafficSignal : TrafficSignal
+        - mode : TrafficMode
+
+        + execute() : void
+        + undo() : void
+    }
+}
+
+' ==================== OBSERVER PATTERN ====================
+
+package "Observer Pattern" {
+    interface Observer <<Observer>> {
+        + update(event : Event) : void
+        + getObserverId() : String
+    }
+
+    interface Subject <<Observer>> {
+        + registerObserver(obs : Observer) : void
+        + removeObserver(obs : Observer) : void
+        + notifyObservers(event : Event) : void
+    }
+
+    class SecurityObserver <<Observer>> {
+        - observerId : String
+        - authorities : List<String>
+
+        + update(event : Event) : void
+        - alertAuthorities(event : Event) : void
+        - logIncident(event : Event) : void
+        - activateCountermeasures(event : Event) : void
+    }
+
+    class EmailObserver <<Observer>> {
+        - observerId : String
+        - emailService : EmailService
+
+        + update(event : Event) : void
+        - sendEmail(recipient : String, message : String) : void
+    }
+
+    class SMSObserver <<Observer>> {
+        - observerId : String
+        - smsService : SMSService
+
+        + update(event : Event) : void
+        - sendSMS(phoneNumber : String, message : String) : void
+    }
+
+    class Event <<Observer>> {
+        - eventId : String
+        - eventType : EventType
+        - timestamp : LocalDateTime
+        - severity : Severity
+        - description : String
+        - sourceIP : String
+        - recipient : String
+        - message : String
+
+        + getEventType() : EventType
+        + getSeverity() : Severity
+    }
+}
+
+' ==================== ADAPTER PATTERN ====================
+
+package "Adapter Pattern" {
+    interface PaymentProcessor <<Adapter>> {
+        + process(txn : Transaction) : TransactionResult
+        + validate(txn : Transaction) : boolean
+        + getCurrency() : String
+    }
+
+    class FiatPaymentProcessor <<Adapter>> {
+        - bankAPI : BankAPI
+
+        + process(txn : Transaction) : TransactionResult
+        + validate(txn : Transaction) : boolean
+    }
+
+    abstract class CryptoAdapter <<Adapter>> {
+        # convertToTransaction(cryptoTxn) : Transaction
+        # convertToTransactionResult(response) : TransactionResult
+        + {abstract} process(txn : Transaction) : TransactionResult
+    }
+
+    class BitcoinAdapter <<Adapter>> {
+        - bitcoinAPI : BitcoinAPI
+
+        + process(txn : Transaction) : TransactionResult
+        + validate(txn : Transaction) : boolean
+        - convertToBitcoin(txn : Transaction) : BitcoinTransaction
+    }
+
+    class EthereumAdapter <<Adapter>> {
+        - ethereumClient : EthereumClient
+
+        + process(txn : Transaction) : TransactionResult
+        + validate(txn : Transaction) : boolean
+        - convertToEthereum(txn : Transaction) : EthereumTransaction
+    }
+
+    class CryptoAdapterFactory <<Adapter>> {
+        + {static} getAdapter(type : CryptoType) : PaymentProcessor
+    }
+}
+
+' ==================== TEMPLATE METHOD PATTERN ====================
+
+package "Template Method Pattern" {
+    abstract class CityRoutine <<Template>> {
+        + execute() : void {final}
+        # prepareSystem() : void
+        # {abstract} performMainTask() : void
+        # cleanupAndLog() : void
+        # notifyCompletion() : void
+    }
+
+    class MorningRoutine <<Template>> {
+        # performMainTask() : void
+        - turnOffStreetLights() : void
+        - adjustTrafficSignals() : void
+        - checkPublicTransport() : void
+        - sendDailyReport() : void
+    }
+
+    class EveningRoutine <<Template>> {
+        # performMainTask() : void
+        - turnOnStreetLights() : void
+        - increaseSecurity() : void
+        - activateNightMode() : void
+    }
+
+    class SecurityCheckRoutine <<Template>> {
+        # performMainTask() : void
+        - scanVulnerabilities() : void
+        - checkAccessLogs() : void
+        - updateSecurityPatches() : void
+    }
+}
+
+' ==================== BANKING SYSTEM ====================
+
+package "Banking System" {
+    class BankingService {
+        - accountRepository : AccountRepository
+        - transactionRepository : TransactionRepository
+        - observers : List<Observer>
+        - adapters : Map<String, PaymentProcessor>
+
+        + processTransaction(txn : Transaction) : TransactionResult
+        + getBalance(accountId : int) : BigDecimal
+        + createAccount(user : User, type : AccountType) : Account
+        + getTransactionHistory(accountId : int) : List<Transaction>
+        - selectPaymentProcessor(currency : String) : PaymentProcessor
+        - notifyTransactionComplete(txn : Transaction) : void
+    }
+
+    class Transaction {
+        - transactionId : int
+        - fromAccount : int
+        - toAccount : int
+        - amount : BigDecimal
+        - currency : String
+        - transactionType : TransactionType
+        - status : TransactionStatus
+        - timestamp : LocalDateTime
+
+        + validate() : boolean
+        + getDetails() : String
+    }
+
+    class Account {
+        - accountId : int
+        - userId : int
+        - accountType : AccountType
+        - currency : String
+        - balance : BigDecimal
+        - createdAt : LocalDateTime
+
+        + deposit(amount : BigDecimal) : void
+        + withdraw(amount : BigDecimal) : boolean
+        + getBalance() : BigDecimal
+    }
+
+    class TransactionResult {
+        - success : boolean
+        - transactionId : String
+        - errorMessage : String
+        - timestamp : LocalDateTime
+    }
+}
+
+' ==================== SECURITY SYSTEM ====================
+
+package "Security System" {
+    class MFAuthentication {
+        - otpGenerator : OTPGenerator
+        - biometricService : BiometricService
+
+        + authenticate(user : User, creds : Credentials) : boolean
+        - verifyPassword(user : User, password : String) : boolean
+        - generateOTP(user : User) : String
+        - verifyOTP(otp : String, userOTP : String) : boolean
+        - sendOTP(email : String, otp : String) : void
+        - verifyBiometric(user : User, biometric : String) : boolean
+    }
+
+    class RoleBasedAccess {
+        - rolePermissions : Map<Role, Set<Permission>>
+
+        + hasPermission(user : User, perm : Permission) : boolean
+        + checkAccess(user : User, resource : String) : void
+        + assignRole(user : User, role : Role) : void
+    }
+
+    class QuantumResistantEncryption {
+        + encrypt(plaintext : String, key : PublicKey) : String
+        + decrypt(ciphertext : String, key : PrivateKey) : String
+        + sign(message : String, key : PrivateKey) : String
+        + verify(message : String, signature : String, key : PublicKey) : boolean
+        - generateLatticeKey(key : Key) : byte[]
+        - latticeEncrypt(text : String, key : byte[]) : String
+        - latticeDecrypt(cipher : String, key : byte[]) : String
+        - hashBasedSignature(message : String, key : PrivateKey) : String
+    }
+
+    class DDoSDefense {
+        - rateLimiter : RateLimiter
+        - ipRequestCount : Map<String, Integer>
+        - blacklist : Set<String>
+
+        + isAllowed(request : HttpRequest) : boolean
+        - detectAnomalousPattern(request : HttpRequest) : boolean
+        - blacklistIP(ip : String) : void
+        - activateCountermeasures(ip : String) : void
+        - notifySecurityTeam(message : String) : void
+    }
+
+    class SQLInjectionProtection {
+        + createSafeQuery(conn : Connection, query : String, params : Object[]) : PreparedStatement
+        - sanitize(param : Object) : Object
+        - detectSQLKeywords(input : String) : boolean
+    }
+
+    class SecurityManager {
+        - mfAuth : MFAuthentication
+        - rbac : RoleBasedAccess
+        - encryption : QuantumResistantEncryption
+        - ddosDefense : DDoSDefense
+        - sqlProtection : SQLInjectionProtection
+
+        + authenticateUser(creds : Credentials) : User
+        + authorizeAccess(user : User, resource : String) : boolean
+        + validateRequest(request : HttpRequest) : boolean
+        + encryptData(data : String) : String
+        + decryptData(cipher : String) : String
+    }
+}
+
+' ==================== MODELS ====================
+
+package "Models" {
+    class User {
+        - userId : int
+        - username : String
+        - email : String
+        - passwordHash : String
+        - role : Role
+        - mfaEnabled : boolean
+        - createdAt : LocalDateTime
+    }
+
+    class StreetLight {
+        - lightId : String
+        - location : String
+        - isOn : boolean
+
+        + turnOn() : void
+        + turnOff() : void
+        + getStatus() : String
+    }
+
+    class TrafficSignal {
+        - signalId : String
+        - location : String
+        - currentMode : TrafficMode
+
+        + setMode(mode : TrafficMode) : void
+        + getStatus() : String
+    }
+
+    enum Role {
+        ADMIN
+        CITY_MANAGER
+        RESIDENT
+        PUBLIC_SAFETY
+        UTILITY_WORKER
+    }
+
+    enum EventType {
+        SECURITY_BREACH
+        DDOS_ATTEMPT
+        SQL_INJECTION
+        TRANSACTION_COMPLETE
+        CITY_ALERT
+    }
+
+    enum TransactionType {
+        PAYMENT
+        TRANSFER
+        DEPOSIT
+        WITHDRAWAL
+    }
+
+    enum TransactionStatus {
+        PENDING
+        COMPLETED
+        FAILED
+    }
+
+    enum Severity {
+        LOW
+        MEDIUM
+        HIGH
+        CRITICAL
+    }
+}
+
+' ==================== RELATIONSHIPS ====================
+
+' Singleton relationships
+CityController "1" *-- "1" CommandInvoker
+CityController "1" o-- "*" Observer
+CityController .|> Subject
+
+' Command Pattern relationships
+CommandInvoker o-- "*" Command
+Command <|.. LightOnCommand
+Command <|.. LightOffCommand
+Command <|.. ProcessPaymentCommand
+Command <|.. AdjustTrafficCommand
+LightOnCommand --> StreetLight
+LightOffCommand --> StreetLight
+ProcessPaymentCommand --> BankingService
+ProcessPaymentCommand --> Transaction
+AdjustTrafficCommand --> TrafficSignal
+
+' Observer Pattern relationships
+Observer <|.. SecurityObserver
+Observer <|.. EmailObserver
+Observer <|.. SMSObserver
+Observer ..> Event
+Subject <|.. CityController
+
+' Adapter Pattern relationships
+PaymentProcessor <|.. FiatPaymentProcessor
+PaymentProcessor <|.. CryptoAdapter
+CryptoAdapter <|-- BitcoinAdapter
+CryptoAdapter <|-- EthereumAdapter
+CryptoAdapterFactory ..> PaymentProcessor
+
+' Template Method relationships
+CityRoutine <|-- MorningRoutine
+CityRoutine <|-- EveningRoutine
+CityRoutine <|-- SecurityCheckRoutine
+
+' Banking relationships
+BankingService --> PaymentProcessor
+BankingService o-- "*" Observer
+BankingService --> Transaction
+BankingService --> Account
+PaymentProcessor ..> Transaction
+PaymentProcessor ..> TransactionResult
+
+' Security relationships
+SecurityManager *-- MFAuthentication
+SecurityManager *-- RoleBasedAccess
+SecurityManager *-- QuantumResistantEncryption
+SecurityManager *-- DDoSDefense
+SecurityManager *-- SQLInjectionProtection
+MFAuthentication --> User
+RoleBasedAccess --> User
+RoleBasedAccess --> Role
+
+' Model relationships
+User --> Role
+Event --> EventType
+Event --> Severity
+Transaction --> TransactionType
+Transaction --> TransactionStatus
+Account --> User
+
+' CityController relationships
+CityController --> SecurityManager
+CityController --> BankingService
+
+@enduml

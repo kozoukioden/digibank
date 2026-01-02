@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Banking - DigiBank Smart City</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>🏙️ DigiBank - Digital Banking</h1>
+                <p class="subtitle">Fiat & Cryptocurrency Banking</p>
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="admin_dashboard.html">Admin</a>
+                <a href="resident_portal.html">Resident Portal</a>
+                <a href="banking.html" class="active">Banking</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Account Balances -->
+            <section>
+                <h2>Account Balances</h2>
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <h3>USD Account</h3>
+                        <div class="metric-value">$5,250.00</div>
+                        <p style="color: var(--success-color);">↑ $250 this month</p>
+                    </div>
+
+                    <div class="metric-card">
+                        <h3>Bitcoin (BTC)</h3>
+                        <div class="metric-value">0.5000 BTC</div>
+                        <p style="color: var(--text-secondary);">≈ $21,500</p>
+                    </div>
+
+                    <div class="metric-card">
+                        <h3>Ethereum (ETH)</h3>
+                        <div class="metric-value">2.0000 ETH</div>
+                        <p style="color: var(--text-secondary);">≈ $4,600</p>
+                    </div>
+
+                    <div class="metric-card">
+                        <h3>Total Portfolio</h3>
+                        <div class="metric-value" style="color: var(--success-color);">$31,350</div>
+                        <p style="color: var(--success-color);">↑ 8.5% this month</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Send Payment Form -->
+            <section class="controls-section" style="margin-top: 2rem;">
+                <h2>Send Payment</h2>
+
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency" onchange="updateCurrencyInfo()">
+                        <option value="USD">USD - US Dollar (Fiat)</option>
+                        <option value="BTC">BTC - Bitcoin (Cryptocurrency)</option>
+                        <option value="ETH">ETH - Ethereum (Cryptocurrency)</option>
+                        <option value="EUR">EUR - Euro (Fiat)</option>
+                        <option value="TRY">TRY - Turkish Lira (Fiat)</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-success" id="currency-info" style="display: none;">
+                    <strong>Payment Processor:</strong> <span id="processor-type"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="recipient">Recipient Account</label>
+                    <input type="text" id="recipient" placeholder="Enter account number or wallet address">
+                </div>
+
+                <div class="form-group">
+                    <label for="payment-amount">Amount</label>
+                    <input type="number" id="payment-amount" placeholder="0.00" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description (Optional)</label>
+                    <input type="text" id="description" placeholder="e.g., Payment for services">
+                </div>
+
+                <button class="control-button success" onclick="sendPayment()">
+                    💸 Send Payment
+                </button>
+                <button class="control-button" onclick="clearForm()">
+                    Clear Form
+                </button>
+            </section>
+
+            <!-- Transaction History -->
+            <section style="margin-top: 2rem;">
+                <h2>Transaction History</h2>
+                <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 0.75rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Currency</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TXN-123456</td>
+                                <td>Payment</td>
+                                <td>0.005</td>
+                                <td>BTC</td>
+                                <td>2024-12-24 15:30:00</td>
+                                <td><span style="color: var(--success-color);">✓ Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>TXN-123455</td>
+                                <td>Transfer</td>
+                                <td>0.1</td>
+                                <td>ETH</td>
+                                <td>2024-12-24 14:15:00</td>
+                                <td><span style="color: var(--success-color);">✓ Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>TXN-123454</td>
+                                <td>Payment</td>
+                                <td>100.00</td>
+                                <td>USD</td>
+                                <td>2024-12-24 13:00:00</td>
+                                <td><span style="color: var(--success-color);">✓ Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>TXN-123453</td>
+                                <td>Deposit</td>
+                                <td>500.00</td>
+                                <td>USD</td>
+                                <td>2024-12-23 10:00:00</td>
+                                <td><span style="color: var(--success-color);">✓ Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Security Features -->
+            <section style="margin-top: 2rem;">
+                <h2>Security Features</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="icon">🔐</div>
+                        <h3>Multi-Factor Auth</h3>
+                        <p>Password + OTP + Biometric</p>
+                        <span style="color: var(--success-color);">✓ Enabled</span>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🛡️</div>
+                        <h3>Quantum Encryption</h3>
+                        <p>Lattice-based encryption</p>
+                        <span style="color: var(--success-color);">✓ Active</span>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🔒</div>
+                        <h3>Secure Transactions</h3>
+                        <p>DDoS & SQL injection protected</p>
+                        <span style="color: var(--success-color);">✓ Protected</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024-2025 DigiBank Smart City</p>
+            <p>Developed by: HAKAN OĞUZ</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateCurrencyInfo() {
+            const currency = document.getElementById('currency').value;
+            const info = document.getElementById('currency-info');
+            const processor = document.getElementById('processor-type');
+
+            if (currency === 'BTC') {
+                processor.textContent = 'Bitcoin Adapter (Cryptocurrency)';
+            } else if (currency === 'ETH') {
+                processor.textContent = 'Ethereum Adapter (Cryptocurrency)';
+            } else {
+                processor.textContent = 'Fiat Payment Processor';
+            }
+
+            info.style.display = 'block';
+        }
+
+        function sendPayment() {
+            const currency = document.getElementById('currency').value;
+            const recipient = document.getElementById('recipient').value;
+            const amount = document.getElementById('payment-amount').value;
+            const description = document.getElementById('description').value;
+
+            if (!recipient || !amount) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+
+            const message = `Payment Details:\n\n` +
+                          `Currency: ${currency}\n` +
+                          `Recipient: ${recipient}\n` +
+                          `Amount: ${amount} ${currency}\n` +
+                          `Description: ${description || 'N/A'}\n\n` +
+                          `Processing via ${currency === 'BTC' ? 'Bitcoin Adapter' : currency === 'ETH' ? 'Ethereum Adapter' : 'Fiat Processor'}...\n\n` +
+                          `✓ Transaction completed successfully!\n` +
+                          `Transaction ID: TXN-${Date.now()}`;
+
+            alert(message);
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById('recipient').value = '';
+            document.getElementById('payment-amount').value = '';
+            document.getElementById('description').value = '';
+        }
+    </script>
+</body>
+</html>

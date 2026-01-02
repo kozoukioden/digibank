@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Portal - DigiBank Smart City</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>🏙️ DigiBank Smart City - Resident Portal</h1>
+                <p class="subtitle">Your Smart City Services</p>
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="admin_dashboard.html">Admin</a>
+                <a href="resident_portal.html" class="active">Resident Portal</a>
+                <a href="banking.html">Banking</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Welcome Section -->
+            <div class="hero" style="margin-bottom: 2rem;">
+                <h2>Welcome, John Doe</h2>
+                <p>Resident ID: RES-17030222008</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <section>
+                <h2>Quick Actions</h2>
+                <div class="features">
+                    <div class="feature-card" style="cursor: pointer;" onclick="alert('Opening payment form...')">
+                        <div class="icon">🅿️</div>
+                        <h3>Pay Parking Fee</h3>
+                        <p>Quick payment for parking services</p>
+                    </div>
+
+                    <div class="feature-card" style="cursor: pointer;" onclick="alert('Opening utility bills...')">
+                        <div class="icon">💡</div>
+                        <h3>Utility Bills</h3>
+                        <p>View and pay electricity & water bills</p>
+                    </div>
+
+                    <div class="feature-card" style="cursor: pointer;" onclick="alert('Opening security alerts...')">
+                        <div class="icon">🔔</div>
+                        <h3>Notifications</h3>
+                        <p>3 new security notifications</p>
+                    </div>
+
+                    <div class="feature-card" style="cursor: pointer;" onclick="window.location.href='banking.html'">
+                        <div class="icon">💳</div>
+                        <h3>Banking</h3>
+                        <p>Access digital banking services</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- City Services Payment -->
+            <section class="controls-section" style="margin-top: 2rem;">
+                <h2>Pay for City Services</h2>
+
+                <div class="form-group">
+                    <label for="service-type">Service Type</label>
+                    <select id="service-type">
+                        <option>Parking Fee</option>
+                        <option>Water Bill</option>
+                        <option>Electricity Bill</option>
+                        <option>Public Transport</option>
+                        <option>Property Tax</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (USD)</label>
+                    <input type="number" id="amount" placeholder="0.00" value="5.50">
+                </div>
+
+                <div class="form-group">
+                    <label for="payment-method">Payment Method</label>
+                    <select id="payment-method">
+                        <option>Credit Card (USD)</option>
+                        <option>Bitcoin (BTC)</option>
+                        <option>Ethereum (ETH)</option>
+                        <option>Bank Transfer</option>
+                    </select>
+                </div>
+
+                <button class="control-button success" onclick="processPayment()">
+                    💰 Process Payment
+                </button>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section style="margin-top: 2rem;">
+                <h2>Recent Transactions</h2>
+                <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 0.75rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-12-24</td>
+                                <td>Parking Fee</td>
+                                <td>$5.50</td>
+                                <td>Credit Card</td>
+                                <td><span style="color: var(--success-color);">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-12-23</td>
+                                <td>Electricity Bill</td>
+                                <td>0.005 BTC</td>
+                                <td>Bitcoin</td>
+                                <td><span style="color: var(--success-color);">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-12-22</td>
+                                <td>Water Bill</td>
+                                <td>$45.00</td>
+                                <td>Bank Transfer</td>
+                                <td><span style="color: var(--success-color);">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Notifications -->
+            <section style="margin-top: 2rem;">
+                <h2>Recent Notifications</h2>
+                <div class="alert alert-success">
+                    <strong>Payment Successful:</strong> Your parking fee payment of $5.50 has been processed.
+                </div>
+                <div class="alert alert-warning">
+                    <strong>Security Alert:</strong> Unusual activity detected in your neighborhood. All clear now.
+                </div>
+                <div class="alert alert-success">
+                    <strong>Service Update:</strong> Street lights in your area have been upgraded to energy-efficient LEDs.
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024-2025 DigiBank Smart City</p>
+            <p>Developed by: HAKAN OĞUZ</p>
+        </footer>
+    </div>
+
+    <script>
+        function processPayment() {
+            const service = document.getElementById('service-type').value;
+            const amount = document.getElementById('amount').value;
+            const method = document.getElementById('payment-method').value;
+
+            alert(`Processing payment...\n\nService: ${service}\nAmount: $${amount}\nMethod: ${method}\n\nTransaction completed successfully!`);
+        }
+    </script>
+</body>
+</html>

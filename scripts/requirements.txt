@@ -1,0 +1,11 @@
+# Python dependencies for DigiBank monitoring scripts
+# Install with: pip install -r requirements.txt
+
+# File system monitoring (for file_monitor.py)
+watchdog==3.0.0
+
+# Email functionality
+secure-smtplib==0.1.1
+
+# For demo/testing
+python-dotenv==1.0.0

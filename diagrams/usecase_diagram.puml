@@ -1,0 +1,201 @@
+@startuml Smart_City_DigiBank_UseCase_Diagram
+
+title Smart City Automation with Digital Banking Integration - Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+' ==================== ACTORS ====================
+
+actor "Resident" as resident
+actor "City Manager" as cityManager
+actor "Admin" as admin
+actor "Public Safety\nAuthorities" as publicSafety
+actor "Public Utility\nServices" as utility
+
+' ==================== SYSTEM BOUNDARY ====================
+
+rectangle "Smart City DigiBank System" {
+
+    ' ==================== RESIDENT USE CASES ====================
+
+    package "Resident Services" {
+        usecase "Login to System" as UC1
+        usecase "Manage Home Devices" as UC2
+        usecase "Turn On/Off Lights" as UC2.1
+        usecase "Control Temperature" as UC2.2
+        usecase "View City Services" as UC3
+        usecase "Pay for Parking" as UC4
+        usecase "Pay Utility Bills" as UC5
+        usecase "Make Cryptocurrency\nPayment" as UC6
+        usecase "View Transaction\nHistory" as UC7
+        usecase "Receive Security\nNotifications" as UC8
+        usecase "Update Profile" as UC9
+        usecase "Enable MFA" as UC10
+    }
+
+    ' ==================== BANKING SERVICES ====================
+
+    package "Banking Services" {
+        usecase "Process Payment" as UC20
+        usecase "Validate Transaction" as UC21
+        usecase "Select Payment Method\n(Fiat/Crypto)" as UC22
+        usecase "Update Account Balance" as UC23
+        usecase "Send Transaction\nNotification" as UC24
+        usecase "Export User Data" as UC25
+    }
+
+    ' ==================== CITY MANAGEMENT ====================
+
+    package "City Management" {
+        usecase "Monitor City\nInfrastructure" as UC30
+        usecase "Control Street Lights" as UC31
+        usecase "Manage Traffic Signals" as UC32
+        usecase "View IoT Sensor Data" as UC33
+        usecase "Execute Daily Routines" as UC34
+        usecase "Morning Routine" as UC34.1
+        usecase "Evening Routine" as UC34.2
+        usecase "Generate City Reports" as UC35
+    }
+
+    ' ==================== SECURITY SERVICES ====================
+
+    package "Security Services" {
+        usecase "Authenticate User (MFA)" as UC40
+        usecase "Authorize Access (RBAC)" as UC41
+        usecase "Detect DDoS Attack" as UC42
+        usecase "Prevent SQL Injection" as UC43
+        usecase "Encrypt Sensitive Data" as UC44
+        usecase "Monitor Security Events" as UC45
+        usecase "Send Security Alerts" as UC46
+        usecase "Activate Countermeasures" as UC47
+    }
+
+    ' ==================== PUBLIC SAFETY ====================
+
+    package "Public Safety" {
+        usecase "Receive Emergency\nAlerts" as UC50
+        usecase "View Security Incidents" as UC51
+        usecase "Access Surveillance Data" as UC52
+    }
+
+    ' ==================== UTILITY SERVICES ====================
+
+    package "Utility Services" {
+        usecase "Monitor Water Usage" as UC60
+        usecase "Monitor Electricity" as UC61
+        usecase "Respond to Maintenance\nAlerts" as UC62
+        usecase "Generate Utility Reports" as UC63
+    }
+
+    ' ==================== ADMIN SERVICES ====================
+
+    package "Admin Services" {
+        usecase "Manage Users" as UC70
+        usecase "Assign Roles" as UC71
+        usecase "View System Logs" as UC72
+        usecase "Configure Security\nSettings" as UC73
+        usecase "Deploy Updates" as UC74
+    }
+}
+
+' ==================== RELATIONSHIPS ====================
+
+' Resident relationships
+resident --> UC1
+resident --> UC2
+resident --> UC3
+resident --> UC4
+resident --> UC5
+resident --> UC6
+resident --> UC7
+resident --> UC8
+resident --> UC9
+resident --> UC10
+
+UC2 ..> UC2.1 : <<include>>
+UC2 ..> UC2.2 : <<include>>
+
+' City Manager relationships
+cityManager --> UC30
+cityManager --> UC31
+cityManager --> UC32
+cityManager --> UC33
+cityManager --> UC34
+cityManager --> UC35
+
+UC34 ..> UC34.1 : <<extend>>
+UC34 ..> UC34.2 : <<extend>>
+
+' Admin relationships
+admin --> UC70
+admin --> UC71
+admin --> UC72
+admin --> UC73
+admin --> UC74
+
+' Public Safety relationships
+publicSafety --> UC50
+publicSafety --> UC51
+publicSafety --> UC52
+
+' Utility relationships
+utility --> UC60
+utility --> UC61
+utility --> UC62
+utility --> UC63
+
+' Banking internal relationships
+UC4 --> UC20 : <<include>>
+UC5 --> UC20 : <<include>>
+UC6 --> UC20 : <<include>>
+
+UC20 ..> UC21 : <<include>>
+UC20 ..> UC22 : <<include>>
+UC20 ..> UC23 : <<include>>
+UC20 ..> UC24 : <<include>>
+
+' Security relationships (system-wide)
+UC1 ..> UC40 : <<include>>
+UC1 ..> UC41 : <<include>>
+UC20 ..> UC44 : <<include>>
+UC30 ..> UC45 : <<include>>
+
+UC42 --> UC47 : <<include>>
+UC45 --> UC46 : <<include>>
+
+' Cross-cutting concerns
+UC8 <-- UC46 : <<notify>>
+UC50 <-- UC46 : <<notify>>
+UC24 --> UC8 : <<notify>>
+
+' Notes
+note right of UC40
+  Multi-Factor Authentication:
+  1. Password verification
+  2. OTP verification
+  3. Biometric (optional)
+end note
+
+note right of UC42
+  DDoS Defense includes:
+  - Rate limiting
+  - IP blacklisting
+  - Pattern analysis
+  - Countermeasures activation
+end note
+
+note bottom of UC22
+  Supported currencies:
+  - Fiat (USD, EUR, TRY)
+  - Bitcoin (BTC)
+  - Ethereum (ETH)
+end note
+
+note right of UC34
+  Daily routines executed
+  automatically by Template
+  Method Pattern
+end note
+
+@enduml
